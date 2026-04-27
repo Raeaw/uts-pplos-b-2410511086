@@ -79,3 +79,64 @@ exports.login = async (req, res) => {
         res.status(500).json({ message: 'Terjadi kesalahan server', error: error.message });
     }
 };
+
+// Endpoint untuk memperbarui Access Token menggunakan Refresh Token
+exports.refreshToken = async (req, res) => {
+    try {
+        const { refresh_token } = req.body;
+
+        if (!refresh_token) {
+            return res.status(403).json({ message: 'Refresh token diperlukan' });
+        }
+
+        // Cari user yang memiliki refresh token ini di database
+        const user = await User.findOne({ refresh_token });
+        if (!user) {
+            return res.status(403).json({ message: 'Refresh token tidak valid atau sudah kedaluwarsa' });
+        }
+
+        // Verifikasi token
+        jwt.verify(refresh_token, process.env.JWT_REFRESH_SECRET, (err, decoded) => {
+            if (err) {
+                return res.status(403).json({ message: 'Refresh token tidak valid' });
+            }
+
+            // Jika valid, buat Access Token baru (15 menit)
+            const newAccessToken = jwt.sign(
+                { id: user._id, email: user.email, name: user.name },
+                process.env.JWT_SECRET,
+                { expiresIn: '15m' }
+            );
+
+            res.status(200).json({
+                message: 'Access token berhasil diperbarui',
+                access_token: newAccessToken
+            });
+        });
+    } catch (error) {
+        res.status(500).json({ message: 'Terjadi kesalahan server', error: error.message });
+    }
+};
+
+// Endpoint untuk Logout (Menghapus / Blacklist Refresh Token)
+exports.logout = async (req, res) => {
+    try {
+        // Asumsinya kita menerima user ID dari middleware nantinya, atau dari body request
+        const { email } = req.body; 
+
+        // Hapus refresh token dari database
+        const user = await User.findOneAndUpdate(
+            { email }, 
+            { refresh_token: null }, 
+            { new: true }
+        );
+
+        if (!user) {
+            return res.status(404).json({ message: 'User tidak ditemukan' });
+        }
+
+        res.status(200).json({ message: 'Logout berhasil, token di-blacklist' });
+    } catch (error) {
+        res.status(500).json({ message: 'Terjadi kesalahan server', error: error.message });
+    }
+};

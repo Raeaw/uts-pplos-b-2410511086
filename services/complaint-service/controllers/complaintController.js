@@ -1,38 +1,90 @@
-const Complaint = require('../models/Complaint');
+const Complaint = require("../models/Complaint");
 
+// 1. Endpoint Membuat Pengaduan Baru (POST)
+exports.createComplaint = async (req, res) => {
+	try {
+		const { judul, deskripsi, kategori } = req.body;
+
+		// Mengambil identitas user dari Header (disisipkan oleh API Gateway)
+		const email = req.headers["x-user-email"];
+		const name = req.headers["x-user-name"];
+
+		if (!email) {
+			return res
+				.status(401)
+				.json({
+					message:
+						"Unauthorized: Akses langsung ke service ditolak. Gunakan Gateway.",
+				});
+		}
+
+		const newComplaint = new Complaint({
+			judul,
+			deskripsi,
+			kategori,
+			mahasiswa_email: email,
+			mahasiswa_name: name,
+		});
+
+		await newComplaint.save();
+		res
+			.status(201)
+			.json({ message: "Pengaduan berhasil dibuat", data: newComplaint });
+	} catch (error) {
+		res
+			.status(400)
+			.json({ message: "Gagal membuat pengaduan", error: error.message });
+	}
+};
+
+// 2. Endpoint Mengambil Daftar Pengaduan dengan Paging & Filtering (GET)
 exports.getComplaints = async (req, res) => {
-    try {
-        const { kategori, page = 1, limit = 10 } = req.query;
-        let query = {};
+	try {
+		// Menerima parameter query (Syarat UTS)
+		const page = parseInt(req.query.page) || 1;
+		const per_page = parseInt(req.query.per_page) || 10;
+		const kategori = req.query.kategori;
 
-        // Filtering berdasarkan kategori
-        if (kategori) {
-            query.kategori = kategori;
-        }
+		// Menyusun query database
+		let query = {};
 
-        const complaints = await Complaint.find(query)
-            .limit(limit * 1)
-            .skip((page - 1) * limit)
-            .exec();
+		// Jika ada filter kategori (contoh: ?kategori=akademik)
+		if (kategori) {
+			query.kategori = kategori;
+		}
 
-        // Mengembalikan error status 404 jika query pada kategori tidak ada hasilnya
-        if (!complaints || complaints.length === 0) {
-            return res.status(404).json({
-                success: false,
-                message: 'Data pengaduan tidak ditemukan untuk kategori tersebut.'
-            });
-        }
+		// Menghitung total data untuk keperluan pagination
+		const total_data = await Complaint.countDocuments(query);
 
-        const count = await Complaint.countDocuments(query);
+		// Jika data kosong berdasarkan filter, kembalikan 404 (Best Practice REST API)
+		if (total_data === 0) {
+			return res
+				.status(404)
+				.json({
+					message: "Data pengaduan tidak ditemukan untuk kriteria tersebut.",
+				});
+		}
 
-        res.status(200).json({
-            success: true,
-            data: complaints,
-            totalPages: Math.ceil(count / limit),
-            currentPage: page
-        });
+		// Mengambil data dengan batasan paging
+		const complaints = await Complaint.find(query)
+			.sort({ createdAt: -1 }) // Urutkan dari yang terbaru
+			.skip((page - 1) * per_page)
+			.limit(per_page);
 
-    } catch (error) {
-        res.status(500).json({ success: false, message: error.message });
-    }
+		// Mengembalikan response sesuai format pagination
+		res.status(200).json({
+			message: "Berhasil mengambil data pengaduan",
+			data: complaints,
+			pagination: {
+				current_page: page,
+				per_page: per_page,
+				total_data: total_data,
+				total_pages: Math.ceil(total_data / per_page),
+			},
+		});
+	} catch (error) {
+		res
+			.status(500)
+			.json({ message: "Terjadi kesalahan server", error: error.message });
+	}
 };

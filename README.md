@@ -83,6 +83,13 @@ npm install
 node server.js
 ```
 
+### 🛠️ Pengujian API Terintegrasi (Postman)
+Untuk memudahkan pengujian, saya telah menyertakan Postman Collection di dalam repository ini.
+1. Buka aplikasi **Postman**.
+2. Klik tombol **Import** dan pilih file `postman/collection.json`.
+3. Klik tab **Variables** pada collection tersebut.
+4. Ganti nilai *Current Value* pada variabel `access_token` dengan token JWT yang Anda dapatkan setelah melakukan *Login*.
+
 ## Dokumentasi Endpoint API (Via API Gateway)
 
 Semua _request_ dari _client_ (seperti Postman) **wajib** diarahkan ke port `3000` (API Gateway). Gateway akan secara otomatis meneruskan _request_ ke _service_ yang tepat.
@@ -95,6 +102,8 @@ Endpoint ini tidak memerlukan token untuk diakses.
 | :----- | :-------------------------- | :----------------------------------------------------------------- |
 | `POST` | `/api/auth/register`        | Mendaftarkan akun mahasiswa baru (Lokal).                          |
 | `POST` | `/api/auth/login`           | Login lokal untuk mendapatkan `access_token` (JWT).                |
+| `POST` | `/api/auth/refresh`         | Mengeluarkan access token baru menggunakan refresh token.          |
+| `POST` | `/api/auth/logout`          | Melakukan logout dan menghapus sesi token.                         |
 | `GET`  | `/api/auth/google`          | Mendapatkan URL untuk Authorization Code Flow Google OAuth 2.0.    |
 | `GET`  | `/api/auth/google/callback` | Callback URL yang menerima kode dari Google dan mengembalikan JWT. |
 

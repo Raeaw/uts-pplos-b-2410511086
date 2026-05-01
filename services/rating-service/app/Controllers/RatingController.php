@@ -99,4 +99,112 @@ class RatingController extends ResourceController
             ]
         ]);
     }
+
+    public function update($id = null)
+    {
+        $headerModel = new RatingHeaderModel();
+        $detailModel = new RatingDetailModel();
+
+        // 1. Ambil email user dari Header API Gateway
+        $userEmail = $this->request->getServer('HTTP_X_USER_EMAIL');
+        if (!$userEmail) {
+            return $this->failUnauthorized('Akses ditolak. Silakan lewat API Gateway.');
+        }
+
+        // 2. Cek apakah data rating header ada di database
+        $existingRating = $headerModel->find($id);
+        if (!$existingRating) {
+            return $this->failNotFound('Data penilaian tidak ditemukan.');
+        }
+
+        // 3. Otorisasi Keamanan: Pastikan yang mengubah adalah pemilik data
+        if ($existingRating['user_email'] !== $userEmail) {
+            return $this->failForbidden('Anda tidak memiliki hak untuk mengubah data penilaian ini.');
+        }
+
+        // 4. Ambil data dari JSON Body
+        $json = $this->request->getJSON();
+
+        // 5. Mulai Database Transaction
+        $db = \Config\Database::connect();
+        $db->transStart();
+
+        // 6. Update Tabel Header
+        $headerData = [
+            'komentar_tambahan' => $json->komentar_tambahan ?? $existingRating['komentar_tambahan'],
+        ];
+        $headerModel->update($id, $headerData);
+
+        // 7. Update Tabel Detail (Hapus yang lama, masukkan yang baru)
+        if (isset($json->ratings) && is_array($json->ratings)) {
+            // Hapus detail lama berdasarkan id_rating_header
+            $detailModel->where('id_rating_header', $id)->delete();
+            
+            // Masukkan detail baru
+            foreach ($json->ratings as $item) {
+                $detailModel->insert([
+                    'id_rating_header' => $id,
+                    'id_aspek'         => $item->id_aspek,
+                    'id_skala'         => $item->id_skala,
+                ]);
+            }
+        }
+
+        $db->transComplete();
+
+        if ($db->transStatus() === false) {
+            return $this->fail('Gagal memperbarui penilaian.');
+        }
+
+        return $this->respond([
+            'status'  => 200,
+            'message' => 'Penilaian berhasil diperbarui',
+            'data'    => ['id_rating' => $id]
+        ]);
+    }
+
+    public function delete($id = null)
+    {
+        $headerModel = new RatingHeaderModel();
+        $detailModel = new RatingDetailModel();
+
+        // 1. Ambil email user dari Header API Gateway
+        $userEmail = $this->request->getServer('HTTP_X_USER_EMAIL');
+        if (!$userEmail) {
+            return $this->failUnauthorized('Akses ditolak. Silakan lewat API Gateway.');
+        }
+
+        // 2. Cek apakah data rating header ada
+        $existingRating = $headerModel->find($id);
+        if (!$existingRating) {
+            return $this->failNotFound('Data penilaian tidak ditemukan.');
+        }
+
+        // 3. Otorisasi Keamanan: Pastikan yang menghapus adalah pemilik data
+        if ($existingRating['user_email'] !== $userEmail) {
+            return $this->failForbidden('Anda tidak memiliki hak untuk menghapus data penilaian ini.');
+        }
+
+        // 4. Mulai Database Transaction
+        $db = \Config\Database::connect();
+        $db->transStart();
+
+        // 5. Hapus Tabel Detail Terlebih Dahulu (Wajib agar tidak kena FK Constraint)
+        $detailModel->where('id_rating_header', $id)->delete();
+        
+        // 6. Baru Hapus Tabel Header
+        $headerModel->delete($id);
+
+        $db->transComplete();
+
+        if ($db->transStatus() === false) {
+            return $this->fail('Gagal menghapus penilaian.');
+        }
+
+        return $this->respondDeleted([
+            'status'  => 200,
+            'message' => 'Penilaian berhasil dihapus',
+            'data'    => ['id_rating' => $id]
+        ]);
+    }
 }

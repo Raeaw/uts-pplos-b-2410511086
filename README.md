@@ -53,7 +53,8 @@ Aplikasi ini membutuhkan keempat _service_ berjalan secara bersamaan di terminal
 
 ```bash
 cd services/auth-service
-npm install bcryptjs cors dotenv express googleapis jsonwebtoken mongoose
+cp .env.example .env
+npm install
 node server.js
 ```
 
@@ -61,7 +62,8 @@ node server.js
 
 ```bash
 cd services/complaint-service
-npm install cors dotenv express mongoose
+cp .env.example .env
+npm install
 node server.js
 ```
 
@@ -71,6 +73,7 @@ Pastikan modul MySQL di XAMPP sudah menyala. Impor struktur database dari file .
 
 ```bash
 cd services/rating-service
+cp .env.example .env
 composer install
 php spark serve --host 127.0.0.1 --port 8082
 ```
@@ -79,7 +82,8 @@ php spark serve --host 127.0.0.1 --port 8082
 
 ```bash
 cd gateway
-npm install cors dotenv express express-rate-limit http-proxy-middleware jsonwebtoken
+cp .env.example .env
+npm install
 node server.js
 ```
 
@@ -134,32 +138,35 @@ Endpoint ini tidak memerlukan token untuk diakses.
 
 ## Dokumentasi Pengujian API (Postman)
 
-Berikut adalah bukti pengujian dari seluruh *endpoint* menggunakan Postman, yang dikelompokkan berdasarkan layanannya:
+Berikut adalah bukti pengujian dari seluruh _endpoint_ menggunakan Postman, yang dikelompokkan berdasarkan layanannya:
 
 ### 1. Layanan Autentikasi (Auth Service)
-* **Register User Lokal:**
+
+- **Register User Lokal:**
   ![Register User](postman/screenshots/auth/post-register.png)
-* **Login User Lokal:**
+- **Login User Lokal:**
   ![Login User](postman/screenshots/auth/post-login.png)
-* **Login Google OAuth 2.0:**
+- **Login Google OAuth 2.0:**
   ![Login Google](postman/screenshots/auth/get-loginGoogle.png)
-* **Refresh Token:**
+- **Refresh Token:**
   ![Refresh Token](postman/screenshots/auth/post-refreshToken.png)
-* **Logout:**
+- **Logout:**
   ![Logout](postman/screenshots/auth/post-logout.png)
 
 ### 2. Layanan Pengaduan (Complaint Service)
-* **Buat Pengaduan Baru (POST):**
+
+- **Buat Pengaduan Baru (POST):**
   ![Post Pengaduan](postman/screenshots/complaint/post-pengaduan.png)
-* **Ambil Daftar Pengaduan (GET):**
+- **Ambil Daftar Pengaduan (GET):**
   ![Get Pengaduan](postman/screenshots/complaint/get-pengaduan.png)
 
 ### 3. Layanan Penilaian (Rating Service)
-* **Beri Penilaian (POST):**
+
+- **Beri Penilaian (POST):**
   ![Post Rating](postman/screenshots/rating/post-rating.png)
-* **Ambil Riwayat Penilaian (GET):**
+- **Ambil Riwayat Penilaian (GET):**
   ![Get Rating](postman/screenshots/rating/get-rating.png)
-* **Ubah Penilaian (PUT):**
+- **Ubah Penilaian (PUT):**
   ![Put Rating](postman/screenshots/rating/put-rating.png)
-* **Hapus Penilaian (DELETE):**
+- **Hapus Penilaian (DELETE):**
   ![Delete Rating](postman/screenshots/rating/delete-rating.png)

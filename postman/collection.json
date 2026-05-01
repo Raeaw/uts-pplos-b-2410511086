@@ -24,14 +24,8 @@
 						},
 						"url": {
 							"raw": "{{base_url}}/api/auth/register",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"api",
-								"auth",
-								"register"
-							]
+							"host": ["{{base_url}}"],
+							"path": ["api", "auth", "register"]
 						}
 					},
 					"response": []
@@ -52,14 +46,8 @@
 						},
 						"url": {
 							"raw": "{{base_url}}/api/auth/login",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"api",
-								"auth",
-								"login"
-							]
+							"host": ["{{base_url}}"],
+							"path": ["api", "auth", "login"]
 						}
 					},
 					"response": []
@@ -80,14 +68,8 @@
 						},
 						"url": {
 							"raw": "{{base_url}}/api/auth/refresh",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"api",
-								"auth",
-								"refresh"
-							]
+							"host": ["{{base_url}}"],
+							"path": ["api", "auth", "refresh"]
 						}
 					},
 					"response": []
@@ -118,14 +100,8 @@
 						},
 						"url": {
 							"raw": "{{base_url}}/api/auth/logout",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"api",
-								"auth",
-								"logout"
-							]
+							"host": ["{{base_url}}"],
+							"path": ["api", "auth", "logout"]
 						}
 					},
 					"response": []
@@ -137,14 +113,8 @@
 						"header": [],
 						"url": {
 							"raw": "{{base_url}}/api/auth/google",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"api",
-								"auth",
-								"google"
-							]
+							"host": ["{{base_url}}"],
+							"path": ["api", "auth", "google"]
 						}
 					},
 					"response": []
@@ -180,14 +150,8 @@
 						},
 						"url": {
 							"raw": "{{base_url}}/api/v1/pengaduan",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"api",
-								"v1",
-								"pengaduan"
-							]
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "pengaduan"]
 						}
 					},
 					"response": []
@@ -209,14 +173,8 @@
 						"header": [],
 						"url": {
 							"raw": "{{base_url}}/api/v1/pengaduan?page=1&per_page=5&kategori=fasilitas",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"api",
-								"v1",
-								"pengaduan"
-							],
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "pengaduan"],
 							"query": [
 								{
 									"key": "page",
@@ -266,14 +224,8 @@
 						},
 						"url": {
 							"raw": "{{base_url}}/api/v1/rating",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"api",
-								"v1",
-								"rating"
-							]
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "rating"]
 						}
 					},
 					"response": []
@@ -295,14 +247,8 @@
 						"header": [],
 						"url": {
 							"raw": "{{base_url}}/api/v1/rating?page=1&per_page=5",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"api",
-								"v1",
-								"rating"
-							],
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "rating"],
 							"query": [
 								{
 									"key": "page",
@@ -313,6 +259,61 @@
 									"value": "5"
 								}
 							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Ubah Penilaian (Update)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"komentar_tambahan\": \"Saya ubah komentarnya, ternyata masalah berulang.\",\n    \"ratings\": [\n        { \"id_aspek\": 1, \"id_skala\": 3 },\n        { \"id_aspek\": 2, \"id_skala\": 3 },\n        { \"id_aspek\": 3, \"id_skala\": 2 }\n    ]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/rating/1",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "rating", "1"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Hapus Penilaian (Delete)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/v1/rating/1",
+							"host": ["{{base_url}}"],
+							"path": ["api", "v1", "rating", "1"]
 						}
 					},
 					"response": []
@@ -328,7 +329,7 @@
 		},
 		{
 			"key": "access_token",
-			"value": "isi_access_token_disini_setelah_login",
+			"value": "paste_access_token_disini_setelah_login",
 			"type": "string"
 		}
 	]

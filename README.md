@@ -53,7 +53,7 @@ Aplikasi ini membutuhkan keempat _service_ berjalan secara bersamaan di terminal
 
 ```bash
 cd services/auth-service
-npm install
+npm install bcryptjs cors dotenv express googleapis jsonwebtoken mongoose
 node server.js
 ```
 
@@ -61,7 +61,7 @@ node server.js
 
 ```bash
 cd services/complaint-service
-npm install
+npm install cors dotenv express mongoose
 node server.js
 ```
 
@@ -79,16 +79,18 @@ php spark serve --host 127.0.0.1 --port 8082
 
 ```bash
 cd gateway
-npm install
+npm install cors dotenv express express-rate-limit http-proxy-middleware jsonwebtoken
 node server.js
 ```
 
 ### 🛠️ Pengujian API Terintegrasi (Postman)
+
 Untuk memudahkan pengujian, saya telah menyertakan Postman Collection di dalam repository ini.
+
 1. Buka aplikasi **Postman**.
 2. Klik tombol **Import** dan pilih file `postman/collection.json`.
 3. Klik tab **Variables** pada collection tersebut.
-4. Ganti nilai *Current Value* pada variabel `access_token` dengan token JWT yang Anda dapatkan setelah melakukan *Login*.
+4. Ganti nilai _Current Value_ pada variabel `access_token` dengan token JWT yang Anda dapatkan setelah melakukan _Login_.
 
 ## Dokumentasi Endpoint API (Via API Gateway)
 
@@ -122,8 +124,10 @@ Endpoint ini tidak memerlukan token untuk diakses.
 
 **Wajib** menyertakan header `Authorization: Bearer <access_token>`.
 
-| Method | Endpoint                           | Keterangan                                                                                                            |
-| :----- | :--------------------------------- | :-------------------------------------------------------------------------------------------------------------------- |
-| `POST` | `/api/v1/rating`                   | Mengirim penilaian relasional (Header & Detail). Membutuhkan Body JSON (`id_pengaduan`, `komentar`, array `ratings`). |
-| `GET`  | `/api/v1/rating`                   | Mengambil daftar riwayat penilaian dengan _Join_ tabel master.                                                        |
-| `GET`  | `/api/v1/rating?page=1&per_page=5` | Contoh penerapan _Pagination_.                                                                                        |
+| Method   | Endpoint                           | Keterangan                                                                 |
+| :------- | :--------------------------------- | :------------------------------------------------------------------------- |
+| `POST`   | `/api/v1/rating`                   | Mengirim penilaian relasional (Header & Detail). Membutuhkan Body JSON.    |
+| `GET`    | `/api/v1/rating`                   | Mengambil daftar riwayat penilaian dengan _Join_ tabel master.             |
+| `GET`    | `/api/v1/rating?page=1&per_page=5` | Contoh penerapan _Pagination_.                                             |
+| `PUT`    | `/api/v1/rating/:id`               | Mengubah data penilaian beserta detailnya (contoh ID: `/api/v1/rating/1`). |
+| `DELETE` | `/api/v1/rating/:id`               | Menghapus data penilaian beserta detailnya secara permanen.                |

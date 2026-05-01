@@ -12,6 +12,69 @@ Sistem ini memecah monolitik menjadi layanan-layanan independen yang berkomunika
 
 ---
 
+## Arsitektur Database & Skema Tabel
+
+Sistem ini menerapkan konsep **Polyglot Persistence**, di mana setiap _service_ mandiri dalam mengelola basis datanya sendiri.
+
+### 1. Auth Service (MongoDB - NoSQL)
+
+**Collection: `users`**
+Penyimpanan fleksibel untuk data kredensial mahasiswa.
+| Field | Tipe Data | Keterangan |
+| :--- | :--- | :--- |
+| `_id` | ObjectId | Primary Key (Auto-generated) |
+| `name` | String | Nama lengkap mahasiswa |
+| `email` | String | Email mahasiswa (Unique) |
+| `password` | String | Password yang di-hash menggunakan _Bcrypt_ |
+| `googleId` | String | ID unik dari Google (Opsional, untuk fitur OAuth) |
+| `createdAt` | Date | Timestamp otomatis |
+
+### 2. Complaint Service (MongoDB - NoSQL)
+
+**Collection: `pengaduans`**
+Penyimpanan dokumen untuk laporan pengaduan yang sifatnya dinamis.
+| Field | Tipe Data | Keterangan |
+| :--- | :--- | :--- |
+| `_id` | ObjectId | Primary Key (Auto-generated) |
+| `judul` | String | Judul singkat pengaduan |
+| `deskripsi` | String | Detail lengkap masalah yang dilaporkan |
+| `kategori` | String | Kategori (misal: fasilitas, akademik, layanan) |
+| `createdAt` | Date | Timestamp otomatis |
+
+### 3. Rating Service (MySQL - Relational SQL)
+
+Menggunakan arsitektur **Header-Detail** dengan 4 tabel yang ter-relasi (_Foreign Key_) untuk menjaga integritas data penilaian.
+
+**A. Tabel `rating_headers` (Data Transaksi Utama)**
+| Kolom | Tipe Data | Keterangan |
+| :--- | :--- | :--- |
+| `id` | INT (PK) | Primary Key (Auto Increment) |
+| `id_pengaduan` | VARCHAR | Merujuk pada `_id` (String) di _Complaint Service_ |
+| `user_email` | VARCHAR | Email mahasiswa (didapat dari _Auth Gateway_) |
+| `komentar_tambahan` | TEXT | Komentar opsional dari mahasiswa |
+| `created_at` | DATETIME | Waktu penilaian diberikan |
+
+**B. Tabel `rating_details` (Detail Penilaian per Aspek)**
+| Kolom | Tipe Data | Keterangan |
+| :--- | :--- | :--- |
+| `id` | INT (PK) | Primary Key (Auto Increment) |
+| `id_rating_header` | INT (FK) | Relasi ke `rating_headers.id` |
+| `id_aspek` | INT (FK) | Relasi ke tabel master `aspek_penilaian.id` |
+| `id_skala` | INT (FK) | Relasi ke tabel master `skala_rating.id` |
+
+**C. Tabel `aspek_penilaian` (Master Data Aspek)**
+| Kolom | Tipe Data | Keterangan |
+| :--- | :--- | :--- |
+| `id` | INT (PK) | Primary Key |
+| `nama_aspek` | VARCHAR | Contoh: "Kecepatan Tanggapan", "Solutif" |
+
+**D. Tabel `skala_rating` (Master Data Skala/Nilai)**
+| Kolom | Tipe Data | Keterangan |
+| :--- | :--- | :--- |
+| `id` | INT (PK) | Primary Key |
+| `nilai` | INT | Angka skala (contoh: 1 sampai 5) |
+| `keterangan` | VARCHAR | Contoh: "Sangat Kurang" hingga "Sangat Baik" |
+
 ## Arsitektur Sistem
 
 Sistem ini terdiri dari 4 komponen utama:

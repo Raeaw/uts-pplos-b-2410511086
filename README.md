@@ -131,3 +131,35 @@ Endpoint ini tidak memerlukan token untuk diakses.
 | `GET`    | `/api/v1/rating?page=1&per_page=5` | Contoh penerapan _Pagination_.                                             |
 | `PUT`    | `/api/v1/rating/:id`               | Mengubah data penilaian beserta detailnya (contoh ID: `/api/v1/rating/1`). |
 | `DELETE` | `/api/v1/rating/:id`               | Menghapus data penilaian beserta detailnya secara permanen.                |
+
+## Dokumentasi Pengujian API (Postman)
+
+Berikut adalah bukti pengujian dari seluruh *endpoint* menggunakan Postman, yang dikelompokkan berdasarkan layanannya:
+
+### 1. Layanan Autentikasi (Auth Service)
+* **Register User Lokal:**
+  ![Register User](postman/screenshots/auth/post-register.png)
+* **Login User Lokal:**
+  ![Login User](postman/screenshots/auth/post-login.png)
+* **Login Google OAuth 2.0:**
+  ![Login Google](postman/screenshots/auth/get-loginGoogle.png)
+* **Refresh Token:**
+  ![Refresh Token](postman/screenshots/auth/post-refreshToken.png)
+* **Logout:**
+  ![Logout](postman/screenshots/auth/post-logout.png)
+
+### 2. Layanan Pengaduan (Complaint Service)
+* **Buat Pengaduan Baru (POST):**
+  ![Post Pengaduan](postman/screenshots/complaint/post-pengaduan.png)
+* **Ambil Daftar Pengaduan (GET):**
+  ![Get Pengaduan](postman/screenshots/complaint/get-pengaduan.png)
+
+### 3. Layanan Penilaian (Rating Service)
+* **Beri Penilaian (POST):**
+  ![Post Rating](postman/screenshots/rating/post-rating.png)
+* **Ambil Riwayat Penilaian (GET):**
+  ![Get Rating](postman/screenshots/rating/get-rating.png)
+* **Ubah Penilaian (PUT):**
+  ![Put Rating](postman/screenshots/rating/put-rating.png)
+* **Hapus Penilaian (DELETE):**
+  ![Delete Rating](postman/screenshots/rating/delete-rating.png)

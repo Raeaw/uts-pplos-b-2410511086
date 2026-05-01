@@ -59,7 +59,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"refreshToken\": \"paste_refresh_token_disini_jika_ada\"\n}",
+							"raw": "{\n    \"refresh_token\": \"paste_refresh_token_disini_jika_ada\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -91,7 +91,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"refreshToken\": \"paste_refresh_token_disini_jika_ada\"\n}",
+							"raw": "{\n    \"email\": \"tester@mahasiswa.upnvj.ac.id\",\n    \"refresh_token\": \"paste_refresh_token_disini_jika_ada\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"

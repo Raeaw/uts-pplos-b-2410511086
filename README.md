@@ -4,6 +4,10 @@
 - **NIM:** 2410511086
 - **Kelas:** B
 
+## Link Video
+
+- **Youtube: https://youtu.be/sKVghB1yylM**
+
 # Sistem Pengaduan Mahasiswa - Microservices Architecture
 
 Proyek ini adalah implementasi arsitektur **Microservices** untuk Sistem Pengaduan Mahasiswa, dikembangkan sebagai pemenuhan tugas Ujian Tengah Semester (UTS) mata kuliah PPLOS.

@@ -15,6 +15,8 @@ Sistem ini memecah monolitik menjadi layanan-layanan independen yang berkomunika
 ## Arsitektur Database & Skema Tabel
 
 Sistem ini menerapkan konsep **Polyglot Persistence**, di mana setiap _service_ mandiri dalam mengelola basis datanya sendiri.
+![ERD Database](docs/arsitektur.png)
+_(Garis putus-putus/keterangan teks menunjukkan relasi konseptual antar microservice yang berbeda database)_
 
 ### 1. Auth Service (MongoDB - NoSQL)
 
@@ -66,14 +68,13 @@ Menggunakan arsitektur **Header-Detail** dengan 4 tabel yang ter-relasi (_Foreig
 | Kolom | Tipe Data | Keterangan |
 | :--- | :--- | :--- |
 | `id` | INT (PK) | Primary Key |
-| `nama_aspek` | VARCHAR | Contoh: "Kecepatan Tanggapan", "Solutif" |
+| `nama_aspek` | VARCHAR | Contoh: "Kecepatan Penanganan", "Kualitas Solusi" |
 
 **D. Tabel `skala_rating` (Master Data Skala/Nilai)**
 | Kolom | Tipe Data | Keterangan |
 | :--- | :--- | :--- |
-| `id` | INT (PK) | Primary Key |
-| `nilai` | INT | Angka skala (contoh: 1 sampai 5) |
-| `keterangan` | VARCHAR | Contoh: "Sangat Kurang" hingga "Sangat Baik" |
+| `id` | INT (PK) | Primary Key sekaligus nilai skala (1-5) |
+| `keterangan` | VARCHAR | Contoh: "Sangat Buruk" hingga "Sangat Baik" |
 
 ## Arsitektur Sistem
 
